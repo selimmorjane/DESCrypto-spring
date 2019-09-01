@@ -1,0 +1,12 @@
+keytool -genkey -alias server-alias -keyalg RSA -keypass password123 -storepass pass123 -keystore keystore.jks
+
+
+
+server.port: 8443
+server.ssl.key-store: keystore.p12
+server.ssl.key-store-password: selim123
+server.ssl.keyStoreType: PKCS12
+server.ssl.keyAlias: cle
+
+
+openssl pkcs12 -in keystore.p12 -clcerts -nokeys -out  ca.crt

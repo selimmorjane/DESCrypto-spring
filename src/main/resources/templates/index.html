@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+ <html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Encrypt & Decrypt</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+      <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+ <div class="row">
+    <div class="col s12 m6">
+	  <div class="card light-blue lighten-5">
+        <div class="card-content blue-text text-darken-4">
+          <span class="card-title">WELCOME ! Here you can encrypt and decrypt your text!</span>
+      		<p>Now that connection is done with success, here is the public key used : </p>
+     		<p id="cle-publique"></p>   
+     		<form id="user-form">
+				<input class="blue-text text-darken-2" id="message" name="message" placeholder="What do you want to encrypt" />
+				<button class="btn waves-effect waves-light" type="submit">Encrypt</button>
+			</form> 
+			
+			<form id="decrypt-it">
+				<input class="blue-text text-darken-2" id="message-crypted" name="crypted-message"/>   
+				<button  class="btn waves-effect waves-light" type="submit" >Decrypt</button> 
+			</form>	
+			<br>
+			<p class="blue-text text-darken-2" id="final"></p>
+	
+      	</div>
+      	
+      	<div class="card-action">
+     
+	  		<a href="." class="btn waves-effect waves-light">Again</a>
+	  		<a href="#logout" id="logout-btn" class="btn waves-effect waves-light">Disconnect</a>
+
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- Modal Structure -->
+ <div id="modal-disconnect" class="modal">
+	 <div class="modal-content">
+		 <h4>You are disconnected</h4>
+		 <p>You are disconnected</p>
+	 </div>
+	 <div class="modal-footer">
+		 <a href="." class="modal-close waves-effect waves-green btn-flat">Done</a>
+	 </div>
+ </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script>
+		(function(){
+			$("#user-form").hide();
+			// Envoi du message HELLO
+			$.ajax({
+				url: "/hello",
+				method: "post",
+				data: {
+					message: "HELLO"
+				}
+			}).done(function(data){
+				console.log("DATA", data);
+				$("#cle-publique").append(data);
+				$("#user-form").show();				
+			});
+
+			// Envoie du message non crypté
+			$("#user-form").submit(function(e){
+				e.preventDefault();
+				$.ajax({
+					url: "/encrypt",
+					method: "post",
+					data: {
+						message: $("#message").val()
+					}
+				}).done(function(data){
+					$("#message-crypted").val(data);
+					// Decryptage du message reçu
+				});				
+			});
+
+			$("#decrypt-it").submit(function(e){
+				console.log("Decryptage du message: ", $("#message").val())
+				$.ajax({
+					url: "/decrypt",
+					method: "post",
+					data: {
+						crypted: $("#message").val()
+					}
+				}).done(function(decrypteddata){
+					$("#final").empty().append(decrypteddata);
+				});
+				e.preventDefault();
+			});
+
+			$("#logout-btn").on("click", function (e) {
+				e.preventDefault();
+				$.ajax({
+					url: "/disconnect",
+					method: "get",
+				}).done(function(){
+					confirm("Fin de session");
+				});
+			})
+
+		})(jQuery);
+	</script>
+</body>
+</html>
