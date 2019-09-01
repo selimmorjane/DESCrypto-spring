@@ -1,12 +1,14 @@
-L’objectif de ce projet est d’implémenter l’algorithme DES complet dans une application client/Serveur.
-Nous avons utilisé les langages/frameworks suivants:
+Lâ€™objectif de ce projet est dâ€™implÃ©menter lâ€™algorithme DES complet dans une application client/Serveur.
+Nous avons utilisÃ© les langages/frameworks suivants:
 JAVA, Javascript, Spring Boot, JQUERY, CSS, HTML
 
-Démarrage du projet via l'invite de commande: une fois positionné dans le fichier contenant le projet, nous exécutions la commande suivante :
+DÃ©marrage de l'application : 
+Nous avons Ã©crit un script batch (run.bat) pour permettre Ã  l'utilisateur de lancer l'application plus facilement.
+Ce script contient une simple commande pour lancer l'application en .jar
 
-mvn package && java -jar target/DESCrypto-0.0.1-SNAPSHOT.jar
+Tout ce qu'il suffit d'avoir sur la machine de l'utilisateur c'est la version 1.8 de JAVA
 
-Ensuite, via n'importe quel navigateur internet : 
+
+Ensuite, via n'importe quel navigateur internet, lancer le lien suivant: 
 https://localhost:8443/
 
-Les dépendances qui pourraient être nécessaires : DOCKER
