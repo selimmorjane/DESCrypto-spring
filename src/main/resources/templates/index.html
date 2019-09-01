@@ -59,6 +59,46 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+ <script>
+	 function spkiToPEM(keydata){
+		 var keydataS = arrayBufferToString(keydata);
+		 var keydataB64 = window.btoa(keydataS);
+		 var keydataB64Pem = formatAsPem(keydataB64);
+		 return keydataB64Pem;
+	 }
+	 function arrayBufferToString( buffer ) {
+		 var binary = '';
+		 var bytes = new Uint8Array( buffer );
+		 var len = bytes.byteLength;
+		 for (var i = 0; i < len; i++) {
+			 binary += String.fromCharCode( bytes[ i ] );
+		 }
+		 return binary;
+	 }
+	 function formatAsPem(str) {
+		 var finalString = '-----BEGIN PUBLIC KEY-----\n';
+
+		 while(str.length > 0) {
+			 finalString += str.substring(0, 64) + '\n';
+			 str = str.substring(64);
+		 }
+		 finalString = finalString + "-----END PUBLIC KEY-----";
+		 return finalString;
+	 }
+	 const generatedkey = function(){
+		 return crypto.subtle.generateKey({
+			 "name": "RSA-OAEP",
+			 "modulusLength": 4096,
+			 "publicExponent": new Uint8Array([0x01, 0x00, 0x01]),
+			 "hash": { "name": "SHA-256" }
+		 }, false, ["encrypt", "decrypt"]).then(keys => {
+			 crypto.subtle.exportKey("spki", keys.publicKey).then(keydata => {
+				 var pem = spkiToPEM(keydata);
+				 console.log(pem);
+			 })
+		 });
+	 };
+ </script>
 	<script>
 		(function(){
 			$("#user-form").hide();
@@ -72,7 +112,7 @@
 			}).done(function(data){
 				console.log("DATA", data);
 				$("#cle-publique").append(data);
-				$("#user-form").show();				
+				$("#user-form").show();
 			});
 
 			// Envoie du message non crypté
